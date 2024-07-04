@@ -1,6 +1,7 @@
 // pages/index.js
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import useSound from "use-sound";
 
 const Timer = () => {
   const [workTime, setWorkTime] = useState(10); // Tiempo de cada bloque de ejercicio en segundos
@@ -12,22 +13,42 @@ const Timer = () => {
   const [currentModule, setCurrentModule] = useState(1);
   const [currentExercise, setCurrentExercise] = useState(1);
   const [currentBlock, setCurrentBlock] = useState(1);
+  const [playExerciseChangeSound] = useSound("/Tiempo.mp3");
+  const [playModuleChangeSound] = useSound("/CambioDeCircuito.mp3");
+  const [playStartSound] = useSound("/Va.mp3");
 
-  const exerciseChangeSound = useRef<HTMLAudioElement | null>(null);
-  const moduleChangeSound = useRef<HTMLAudioElement | null>(null);
-  const startSound = useRef<HTMLAudioElement | null>(null);
+  // const exerciseChangeSound = useRef<HTMLAudioElement | null>(null);
+  // const moduleChangeSound = useRef<HTMLAudioElement | null>(null);
+  // const startSound = useRef<HTMLAudioElement | null>(null);
+
+  // useEffect(() => {
+  //   // Carga los sonidos
+  //   exerciseChangeSound.current = new Audio("/Tiempo.mp3");
+  //   moduleChangeSound.current = new Audio("/CambioDeCircuito.mp3");
+  //   startSound.current = new Audio("/Va.mp3");
+
+  //   // Prepara los sonidos para ser reproducidos más adelante
+  //   [
+  //     exerciseChangeSound.current,
+  //     moduleChangeSound.current,
+  //     startSound.current,
+  //   ].forEach((sound) => {
+  //     sound.load();
+  //   });
+  // }, []);
 
   useEffect(() => {
-    exerciseChangeSound.current = new Audio("/Tiempo.mp3");
-    moduleChangeSound.current = new Audio("/CambioDeCircuito.mp3");
-    startSound.current = new Audio("/Va.mp3");
+    // exerciseChangeSound.current = new Audio("/Tiempo.mp3");
+    // moduleChangeSound.current = new Audio("/CambioDeCircuito.mp3");
+    // startSound.current = new Audio("/Va.mp3");
     let interval = null;
 
     if (activeTimer) {
       interval = setInterval(() => {
         setCurrentSecond(currentSecond + 1);
         if (currentSecond >= workTime - 1) {
-          exerciseChangeSound.current?.play(); // Sonido al final de cada bloque
+          playExerciseChangeSound();
+          // exerciseChangeSound.current?.play(); // Sonido al final de cada bloque
           setCurrentSecond(0);
           setCurrentBlock(currentBlock + 1);
           if (currentBlock >= blocksPerExercise) {
@@ -41,7 +62,7 @@ const Timer = () => {
                 alert("Entrenamiento completado!");
                 setCurrentModule(1);
               } else {
-                moduleChangeSound.current?.play(); // Sonido de cambio de módulo al cambiar de circuito
+                playModuleChangeSound(); // Sonido de cambio de módulo al cambiar de circuito
               }
             }
           }
@@ -62,6 +83,8 @@ const Timer = () => {
     currentModule,
     currentExercise,
     currentBlock,
+    playExerciseChangeSound,
+    playModuleChangeSound,
   ]);
 
   return (
@@ -122,7 +145,7 @@ const Timer = () => {
                 currentExercise === 1 &&
                 currentBlock === 1
               ) {
-                startSound.current?.play();
+                playStartSound();
               }
               setActiveTimer(!activeTimer);
             }}
