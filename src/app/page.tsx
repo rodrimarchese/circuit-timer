@@ -13,18 +13,21 @@ const Timer = () => {
   const [currentExercise, setCurrentExercise] = useState(1);
   const [currentBlock, setCurrentBlock] = useState(1);
 
-  const exerciseChangeSound = useRef(new Audio("/Tiempo.mp3"));
-  const moduleChangeSound = useRef(new Audio("/CambioDeCircuito.mp3"));
-  const startSound = useRef(new Audio("/Va.mp3"));
+  const exerciseChangeSound = useRef<HTMLAudioElement | null>(null);
+  const moduleChangeSound = useRef<HTMLAudioElement | null>(null);
+  const startSound = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    exerciseChangeSound.current = new Audio("/Tiempo.mp3");
+    moduleChangeSound.current = new Audio("/CambioDeCircuito.mp3");
+    startSound.current = new Audio("/Va.mp3");
     let interval = null;
 
     if (activeTimer) {
       interval = setInterval(() => {
         setCurrentSecond(currentSecond + 1);
         if (currentSecond >= workTime - 1) {
-          exerciseChangeSound.current.play(); // Sonido al final de cada bloque
+          exerciseChangeSound.current?.play(); // Sonido al final de cada bloque
           setCurrentSecond(0);
           setCurrentBlock(currentBlock + 1);
           if (currentBlock >= blocksPerExercise) {
@@ -38,7 +41,7 @@ const Timer = () => {
                 alert("Entrenamiento completado!");
                 setCurrentModule(1);
               } else {
-                moduleChangeSound.current.play(); // Sonido de cambio de módulo al cambiar de circuito
+                moduleChangeSound.current?.play(); // Sonido de cambio de módulo al cambiar de circuito
               }
             }
           }
@@ -119,7 +122,7 @@ const Timer = () => {
                 currentExercise === 1 &&
                 currentBlock === 1
               ) {
-                startSound.current.play();
+                startSound.current?.play();
               }
               setActiveTimer(!activeTimer);
             }}
